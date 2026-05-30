@@ -5,239 +5,223 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>学生抽選ドラム</title>
 <style>
-/* 全体のシンプルな背景とリセット /
 body {
-margin: 0;
-padding: 0;
-font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
-background-color: #f4f7f6;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-height: 100vh;
-color: #333;
+  margin: 0;
+  padding: 0;
+  font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+  background-color: #f4f7f6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: #333;
 }
 
-/ 1.5倍サイズ /
 h1 {
-margin-bottom: 45px;
-font-size: 36px;
-color: #4a5568;
+  margin-bottom: 45px;
+  font-size: 36px;
+  color: #4a5568;
 }
 
-/ ボタンのスタイリング (1.5倍) /
 .btn-group button {
-background-color: #3182ce;
-color: white;
-border: none;
-border-radius: 12px;
-padding: 22px 45px;
-margin: 0 15px;
-font-size: 27px;
-font-weight: bold;
-cursor: pointer;
-box-shadow: 0 6px 9px rgba(0, 0, 0, 0.1);
-transition: background-color 0.2s, transform 0.1s;
+  background-color: #3182ce;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 22px 45px;
+  margin: 0 15px;
+  font-size: 27px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 6px 9px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s, transform 0.1s;
 }
 
 .btn-group button:hover {
-background-color: #2b6cb0;
+  background-color: #2b6cb0;
 }
 
 .btn-group button:active {
-transform: translateY(3px);
-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(3px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }
 
 .reset-btn {
-margin-top: 60px;
-background-color: #e2e8f0;
-color: #4a5568;
-border: none;
-padding: 15px 30px;
-border-radius: 9px;
-font-size: 24px;
-cursor: pointer;
-transition: background-color 0.2s;
+  margin-top: 60px;
+  background-color: #e2e8f0;
+  color: #4a5568;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 9px;
+  font-size: 24px;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .reset-btn:hover {
-background-color: #cbd5e0;
+  background-color: #cbd5e0;
 }
 
-/ ドラムコンテナ /
+#setup-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 #drum-screen {
-display: none;
-text-align: center;
+  display: none;
+  flex-direction: column;
+  align-items: center;
 }
 
 #drums-container {
-display: flex;
-justify-content: center;
-gap: 45px;
+  display: flex;
+  justify-content: center;
+  gap: 45px;
 }
 
-/ ドラム本体 (1.5倍サイズ) /
 .drum {
-width: 240px;
-height: 225px; / 75px × 3項目分 /
-background-color: #fff;
-border: 6px solid #2d3748;
-border-radius: 18px;
-position: relative;
-overflow: hidden;
-/ 立体感を出すインナーシャドウ /
-box-shadow:
-inset 0px 60px 37px -30px rgba(0, 0, 0, 0.7),
-inset 0px -60px 37px -30px rgba(0, 0, 0, 0.7),
-0 15px 22px -5px rgba(0, 0, 0, 0.2);
+  width: 240px;
+  height: 225px;
+  background-color: #fff;
+  border: 6px solid #2d3748;
+  border-radius: 18px;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    inset 0px 60px 37px -30px rgba(0, 0, 0, 0.7),
+    inset 0px -60px 37px -30px rgba(0, 0, 0, 0.7),
+    0 15px 22px -5px rgba(0, 0, 0, 0.2);
 }
 
-/ 中央の当たりを強調する赤いハイライト /
 .drum-highlight {
-position: absolute;
-top: 75px; / 2段目（中央）に配置 /
-left: 0;
-width: 100%;
-height: 75px;
-border-top: 3px solid #e53e3e;
-border-bottom: 3px solid #e53e3e;
-background-color: rgba(229, 62, 62, 0.15);
-pointer-events: none;
-box-sizing: border-box;
-z-index: 10;
+  position: absolute;
+  top: 75px;
+  left: 0;
+  width: 100%;
+  height: 75px;
+  border-top: 3px solid #e53e3e;
+  border-bottom: 3px solid #e53e3e;
+  background-color: rgba(229, 62, 62, 0.15);
+  pointer-events: none;
+  box-sizing: border-box;
+  z-index: 10;
 }
 
-/ 回転するリスト全体 /
 .drum-strip {
-will-change: transform;
+  will-change: transform;
 }
 
-/ ドラムの中の1つの要素 */
 .drum-item {
-height: 75px;
-line-height: 75px;
-font-size: 33px;
-font-weight: bold;
-text-align: center;
-color: #2d3748;
-box-sizing: border-box;
+  height: 75px;
+  line-height: 75px;
+  font-size: 33px;
+  font-weight: bold;
+  text-align: center;
+  color: #2d3748;
+  box-sizing: border-box;
 }
 </style>
 </head>
 <body>
 
 <div id="setup-screen">
-<h1>抽選する人数を選んでください</h1>
-<div class="btn-group">
-<button onclick="startLottery(1)">1名</button>
-<button onclick="startLottery(2)">2名</button>
-<button onclick="startLottery(3)">3名</button>
-</div>
+  <h1>抽選する人数を選んでください</h1>
+  <div class="btn-group">
+    <button onclick="startLottery(1)">1名</button>
+    <button onclick="startLottery(2)">2名</button>
+    <button onclick="startLottery(3)">3名</button>
+  </div>
 </div>
 
 <div id="drum-screen">
-<div id="drums-container"></div>
-<button class="reset-btn" onclick="resetApp()">もう一度抽選する</button>
+  <div id="drums-container"></div>
+  <button class="reset-btn" onclick="resetApp()">もう一度抽選する</button>
 </div>
 
 <script>
-// 14名の学生リスト
 const students = [
-"佐藤", "鈴木", "高橋", "田中", "伊藤",
-"渡辺", "山本", "中村", "小林", "加藤",
-"吉田", "山田", "佐々木", "山口"
+  "ラムジャン", "ラハト", "タニム", "マヒン", "ホサイン",
+  "サキル", "スダン", "イシカ", "スボダ", "ノヨン",
+  "サイド", "ムシュフィク", "ミア", "ジュバイエル"
 ];
 
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 function startLottery(num) {
-document.getElementById('setup-screen').style.display = 'none';
-document.getElementById('drum-screen').style.display = 'block';
+  document.getElementById('setup-screen').style.display = 'none';
+  const drumScreen = document.getElementById('drum-screen');
+  drumScreen.style.display = 'flex';
 
-const drumsContainer = document.getElementById('drums-container');
-drumsContainer.innerHTML = '';
+  const container = document.getElementById('drums-container');
+  container.innerHTML = '';
 
-// 【解決策の核心】最初に応募者全員を完全にシャッフルし、当選者を重複なしで決定
-const shuffled = [...students];
-for (let i = shuffled.length - 1; i > 0; i--) {
-const j = Math.floor(Math.random() * (i + 1));
-[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-}
-const winners = shuffled.slice(0, num); // ここで選ばれた人は絶対に重複しません
+  const winners = shuffle(students).slice(0, num);
 
-winners.forEach((winner, index) => {
-// 回転時間（10秒、12秒、14秒）
-const duration = 10 + (index * 2);
+  winners.forEach((winner, index) => {
+    const duration = 10 + index * 2;
+    const dummyCount = 20 + index * 6;
 
-// 途中で通過するダミー名前の数（酔い防止のため少なめに設定）
-const dummyCount = 20 + (index * 6);
+    const drum = document.createElement('div');
+    drum.className = 'drum';
 
-const drum = document.createElement('div');
-drum.className = 'drum';
+    const highlight = document.createElement('div');
+    highlight.className = 'drum-highlight';
+    drum.appendChild(highlight);
 
-const highlight = document.createElement('div');
-highlight.className = 'drum-highlight';
-drum.appendChild(highlight);
+    const strip = document.createElement('div');
+    strip.className = 'drum-strip';
+    strip.style.transition = `transform ${duration}s cubic-bezier(0.2, 0.9, 0.3, 1)`;
 
-const strip = document.createElement('div');
-strip.className = 'drum-strip';
-// 穏やかに減速するイージング
-strip.style.transition = transform ${duration}s cubic-bezier(0.2, 0.9, 0.3, 1);
+    let stripNames = [];
+    while (stripNames.length < dummyCount) {
+      const cycle = shuffle(students);
+      if (stripNames.length > 0 && stripNames[stripNames.length - 1] === cycle[0]) {
+        [cycle[0], cycle[cycle.length - 1]] = [cycle[cycle.length - 1], cycle[0]];
+      }
+      stripNames.push(...cycle);
+    }
+    stripNames = stripNames.slice(0, dummyCount);
 
-// ドラム内部のスクロール用ダミー名前リストを作成（同じ名前が連続しないように配慮）
-let stripNames = [];
-while(stripNames.length < dummyCount) {
-let cycle = [...students];
-for(let i = cycle.length - 1; i > 0; i--) {
-const j = Math.floor(Math.random() * (i + 1));
-[cycle[i], cycle[j]] = [cycle[j], cycle[i]];
-}
-if (stripNames.length > 0 && stripNames[stripNames.length - 1] === cycle[0]) {
-[cycle[0], cycle[cycle.length - 1]] = [cycle[cycle.length - 1], cycle[0]];
-}
-stripNames.push(...cycle);
-}
+    stripNames.forEach(name => {
+      const item = document.createElement('div');
+      item.className = 'drum-item';
+      item.textContent = name;
+      strip.appendChild(item);
+    });
 
-// 指定したダミーの数だけ切り出す
-stripNames = stripNames.slice(0, dummyCount);
+    const winnerItem = document.createElement('div');
+    winnerItem.className = 'drum-item';
+    winnerItem.textContent = winner;
+    strip.appendChild(winnerItem);
 
-// ダミーの名前をドラムに追加
-stripNames.forEach(name => {
-const item = document.createElement('div');
-item.className = 'drum-item';
-item.textContent = name;
-strip.appendChild(item);
-});
+    const dummyLast = document.createElement('div');
+    dummyLast.className = 'drum-item';
+    dummyLast.textContent = students[Math.floor(Math.random() * students.length)];
+    strip.appendChild(dummyLast);
 
-// 【本物の当たり】をダミーのすぐ次に追加
-const winnerItem = document.createElement('div');
-winnerItem.className = 'drum-item';
-winnerItem.textContent = winner;
-strip.appendChild(winnerItem);
+    drum.appendChild(strip);
+    container.appendChild(drum);
 
-// 最下段にチラ見えする用の最終ダミーを追加
-const dummyLastItem = document.createElement('div');
-dummyLastItem.className = 'drum-item';
-dummyLastItem.textContent = students[Math.floor(Math.random() * students.length)];
-strip.appendChild(dummyLastItem);
-
-drum.appendChild(strip);
-drumsContainer.appendChild(drum);
-
-// 【位置計算の修正】
-// dummyCount個分進んだ次の要素（winner）がぴったり中央（2段目）に止まるよう、
-// 上方にずらす距離を「(dummyCount - 1) * 75px」に修正しました。
-setTimeout(() => {
-const moveY = (dummyCount - 1) * 75;
-strip.style.transform = translateY(-${moveY}px);
-}, 50);
-});
+    setTimeout(() => {
+      const moveY = (dummyCount - 1) * 75;
+      strip.style.transform = `translateY(-${moveY}px)`;
+    }, 50);
+  });
 }
 
 function resetApp() {
-document.getElementById('setup-screen').style.display = 'flex';
-document.getElementById('drum-screen').style.display = 'none';
-document.getElementById('drums-container').innerHTML = '';
+  document.getElementById('setup-screen').style.display = 'flex';
+  document.getElementById('drum-screen').style.display = 'none';
+  document.getElementById('drums-container').innerHTML = '';
 }
 </script>
 </body>
